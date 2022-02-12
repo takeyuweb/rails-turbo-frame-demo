@@ -11,7 +11,7 @@
       <% end %>
     </div>
     <div class="pl-3">
-      <%= render task.children.order(created_at: :desc) %>
+      <%= turbo_frame_tag "task_#{task.id}_children", src: task_children_path(task), loading: "lazy" %>
     </div>
   </div>
 <% end %>
