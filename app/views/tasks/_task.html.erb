@@ -1,0 +1,17 @@
+<%= turbo_frame_tag task do %>
+  <div class="bg-slate-100 rounded p-3 mb-3">
+    <div class="flex">
+      <div class="flex-grow"><%= task.label %></div>
+      <div><%= link_to "Edit", edit_task_path(task) %></div>
+      <div><%= button_to "Delete", task_path(task), method: :delete, class: "link", data: { "turbo-frame": "tasks" } %></div>
+    </div>
+    <div>
+      <%= turbo_frame_tag "new_task" do %>
+        <%= link_to "Add", new_task_path(parent_id: task.id) %>
+      <% end %>
+    </div>
+    <div class="pl-3">
+      <%= render task.children.order(created_at: :desc) %>
+    </div>
+  </div>
+<% end %>

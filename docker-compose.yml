@@ -40,7 +40,7 @@ services:
       - .:/myapp
     user: ${ARG_USER:-ruby}
     command: >
-      /bin/sh -c "rm -f tmp/pids/server.pid && bundle install && bundle exec bin/rails s -b 0.0.0.0"
+      /bin/sh -c "rm -f tmp/pids/server.pid && bundle install && bundle exec bin/dev"
     ports:
       - 3000:3000
     environment:

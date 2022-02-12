@@ -34,3 +34,6 @@
 !/vendor/.keep
 !/vendor/javascript/.keep
 
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

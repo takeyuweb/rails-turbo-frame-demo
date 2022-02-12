@@ -1,0 +1,10 @@
+
+<% if form.object.errors.any? %>
+  <ul class="bg-red-700 text-white p-2 mb-3 rounded">
+    <% form.object.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= form.text_field :label, placeholder: "Input here", class: "w-full" %>

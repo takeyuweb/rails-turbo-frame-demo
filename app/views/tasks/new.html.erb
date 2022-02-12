@@ -1,0 +1,15 @@
+<h1>Tasks#new</h1>
+<p>Find me in app/views/tasks/new.html.erb</p>
+
+<%= turbo_frame_tag "new_task" do %>
+  <div class="bg-slate-200 rounded p-3 mb-3">
+    <%= form_with model: @task, data: { "turbo-frame": "tasks" } do |form| %>
+      <%= form.hidden_field :parent_id %>
+      <div class="mb-3">
+        <%= render partial: "form", locals: { form: form } %>
+      </div>
+      <%= form.submit "Create", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
+      <%= link_to "Cancel", tasks_path %>
+    <% end %>
+  </div>
+<% end %>

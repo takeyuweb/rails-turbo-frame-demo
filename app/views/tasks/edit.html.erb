@@ -1,0 +1,14 @@
+<h1>Tasks#show</h1>
+<p>Find me in app/views/tasks/show.html.erb</p>
+
+<%= turbo_frame_tag @task do %>
+  <div class="bg-slate-200 rounded p-3 mb-3">
+    <%= form_with model: @task do |form| %>
+      <div class="mb-3">
+        <%= render partial: "form", locals: { form: form } %>
+      </div>
+      <%= form.submit "Update", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
+      <%= link_to "Cancel", @task %>
+    <% end %>
+  </div>
+<% end %>
