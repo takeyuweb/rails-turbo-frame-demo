@@ -1,0 +1,62 @@
+version: "3"
+volumes:
+  pg_data:
+    driver: local
+services:
+  pg:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "3002:1080"
+
+  base: &base
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile.dev
+      cache_from:
+        - importmap-sample-development-cache
+    image: importmap-sample-development:0.1.0
+
+  wait-middleware: &wait-middleware
+    <<: *base
+    environment:
+      WAIT_HOSTS: pg:5432, mailcatcher:1025
+    depends_on:
+      - pg
+      - mailcatcher
+    command: /wait
+
+  app:
+    <<: *base
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/myapp
+    user: ${ARG_USER:-ruby}
+    command: >
+      /bin/sh -c "rm -f tmp/pids/server.pid && bundle install && bundle exec bin/rails s -b 0.0.0.0"
+    ports:
+      - 3000:3000
+    environment:
+      BUNDLE_PATH: ${BUNDLE_PATH:-/myapp/vendor/bundle}
+      DB_HOST: pg
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      SMTP_HOST: mailcatcher
+      SMTP_PORT: 1025
+      SELENIUM_REMOTE_URL: http://webdriver_chrome:4444/wd/hub
+    depends_on:
+      - pg
+      - mailcatcher
+      - webdriver_chrome
+  
+  webdriver_chrome:
+    image: selenium/standalone-chrome
+    shm_size: 256m

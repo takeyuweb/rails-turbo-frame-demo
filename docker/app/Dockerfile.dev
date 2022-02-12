@@ -1,0 +1,31 @@
+FROM ruby:3.1.0
+
+ENV LANG C.UTF-8
+ENV BUNDLER_VERSION 2.3.3
+ENV COMPOSE_WAIT_VERSION 2.9.0
+
+RUN curl -SL https://github.com/ufoscout/docker-compose-wait/releases/download/${COMPOSE_WAIT_VERSION}/wait -o /wait
+RUN chmod +x /wait
+
+RUN apt-get update -qq \
+    && apt-get install --no-install-recommends -y \
+    autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libcurl4-openssl-dev libxml2-dev \
+    postgresql-client \
+    fonts-ipafont-gothic \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN gem update --system \
+    && gem install bundler -v $BUNDLER_VERSION
+
+RUN mkdir /myapp
+WORKDIR /myapp
+
+RUN useradd -m --shell /bin/bash --uid 1000 ruby
+USER ruby
+
+ENV EDITOR vim
+ENV BUNDLE_PATH vendor/bundle
+
+RUN bundle config --global retry 5 \
+    && bundle config --global path ${BUNDLE_PATH}
